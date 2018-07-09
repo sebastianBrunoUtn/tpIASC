@@ -65,7 +65,7 @@ describe('BidManager', function() {
             notifyFinishedBid: () => done()
         };
         const bidRunner = new BidManager(notifierMock, logger);
-        const bidId = bidRunner.newBid(new Bid([], 0.0, 200, {}));
+        bidRunner.newBid(new Bid([], 0.0, 200, {}));
     });
 
     it('should notify of a finished bid with no winner', function(done) {
@@ -78,7 +78,7 @@ describe('BidManager', function() {
             }
         };
         const bidRunner = new BidManager(notifierMock, logger);
-        const bidId = bidRunner.newBid(new Bid([], 0.0, 200, {}));
+        bidRunner.newBid(new Bid([], 0.0, 200, {}));
     });
 
     it('should correctly notify of a finished bid with a winner', function(done) {

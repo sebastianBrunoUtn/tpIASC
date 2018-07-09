@@ -6,10 +6,7 @@ class BidManager {
     }
 
     newBid(bid) {
-        const bidId = Math.floor(Math.random() * 100000);   //Proxima versión: Se puede llevar un registro global de IDs
-        this.bids.set(bidId, bid);
-        this.notifier.notifyNewBid(bid);
-        this.logger.log(`New bid #${bidId}: ${JSON.stringify(bid)}`);
+        const bidId = Math.floor(Math.random() * 100000);   //Próxima versión: Se puede llevar un registro global de IDs.
 
         bid.run(bidId)
             .then(() => {
@@ -17,6 +14,10 @@ class BidManager {
                 this.logger.log(`Bid #${bidId} finished: ${JSON.stringify(bid)}`);
             })
             .catch(() => this.logger.log(`Bid #${bidId} ended but it was cancelled`));
+
+        this.bids.set(bidId, bid);
+        this.notifier.notifyNewBid(bid);
+        this.logger.log(`New bid #${bidId}: ${JSON.stringify(bid)}`);
 
         return bidId;
     }

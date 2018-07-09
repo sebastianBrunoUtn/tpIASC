@@ -1,14 +1,16 @@
 class BuyersRegistry {
-    constructor() {
+    constructor(logger = null) {
         this.buyers = new Set();
+        this.logger = logger? {log: (msg) => logger.log(msg, "BuyersRegistry")} : {log: () => false};
     }
 
     addBuyer(buyer) {
         this.buyers.add(buyer);
+        this.logger.log(`Registered buyer ${buyer.name} : ${JSON.stringify(buyer)}`);
     }
 
     addBuyers(buyers) {
-        buyers.forEach((buyer) => this.buyers.add(buyer));
+        buyers.forEach((buyer) => this.addBuyer(buyer));
     }
 
     buyerWithNameExists(name) {

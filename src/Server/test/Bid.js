@@ -1,4 +1,3 @@
-const {assert} = require('chai');
 const Bid = require("../Bid");
 
 describe('Bid', function() {
