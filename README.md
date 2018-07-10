@@ -1,6 +1,6 @@
 <h1>Sistema de subastas</h1>
 <h2>Arquitectura</h2>
-![arquitectura](https://user-images.githubusercontent.com/11670961/42542004-2efab230-847b-11e8-86cd-95640e56da62.png)
+![alt_text](https://user-images.githubusercontent.com/11670961/42542004-2efab230-847b-11e8-86cd-95640e56da62.png)
 
 
 La arquitectura cuenta con 3 componentes lógicos:
