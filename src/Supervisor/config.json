@@ -1,0 +1,13 @@
+{
+  "loadBalancer" : "http://localhost:8000",
+  "servers": [
+    {
+      "id": 1,
+      "address": "http://localhost:8001"
+    },
+    {
+      "id": 2,
+      "address": "http://localhost:8002"
+    }
+  ]
+}

@@ -51,6 +51,10 @@ app.post('/bids/:bidId/offer', function (req, res) {
     res.send(result);
 });
 
+app.get('/healthcheck', function (req, res) {
+    res.send(true);
+});
+
 app.listen(port, function () {
     console.log('Server listening on port ' + port);
 });
