@@ -7,9 +7,10 @@ const Bid = require("./Bid");
 const BidManager = require("./BidManager");
 
 const app = express();
-const port = process.argv[2]? process.argv[2] : 8080;
+const serverId = process.argv[2]? process.argv[2] : 666;
+const port = process.argv[3]? process.argv[3] : 8080;
 
-const logger = new Logger('./logs/server.txt');
+const logger = new Logger(`./logs/server-${serverId}.txt`);
 const buyersRegistry = new BuyersRegistry(logger);
 const noOpNotifierMock = {
     notifyNewBid: () => false,

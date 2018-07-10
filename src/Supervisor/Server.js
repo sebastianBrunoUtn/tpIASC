@@ -5,12 +5,12 @@ class Server {
         this.ongoingBids = [];
     }
 
-    addOngoingBid(bidId) {
-        this.ongoingBids.push(bidId);
+    addOngoingBid(bid) {
+        this.ongoingBids.push(bid);
     }
 
     removeOngoingBid(bidId) {
-        const index = this.ongoingBids.indexOf(bidId);
+        const index = this.ongoingBids.findIndex(bid => bid.id === bidId);
         if (index > -1) {
             this.ongoingBids.splice(index, 1);
         }

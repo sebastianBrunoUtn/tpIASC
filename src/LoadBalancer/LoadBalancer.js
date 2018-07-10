@@ -1,46 +1,43 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const Logger = require("../Logger");
 const Registry = require("./Registry");
 const Router = require("./Router");
 
 const app = express();
 const port = process.argv[2]? process.argv[2] : 8080;
 
+const logger = new Logger('./logs/loadBalancer.txt');
 const registry = new Registry();
 const Server = (id, address = null, ongoingBids = null) => ({id, address, ongoingBids});
-const servers = [Server(1, "http://localhost:8009", [1, 3]), Server(2, "https://twitter.com", [4, 5]), Server(3, "https://dev.to", [2])];
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/api/set-servers', function (req, res) {
-    registry.setServers(JSON.parse(req.body.servers));
-    res.send(true);
-});
-
-app.post('/api/update-server', function (req, res) {
-    registry.updateServer(JSON.parse(req.body.server));
+    logger.log(`Received request to set/update servers: ${req.body.servers}`);
+    registry.setServers(JSON.parse(req.body.servers).map(server => Server(server.id, server.address, server.ongoingBids)));
     res.send(true);
 });
 
 app.post('/buyers', function (req, res) {
 	const server = Router.routeRandomly(registry.getServers());
-	res.send(307, server.address + "/buyer");
+	res.redirect(307, server.address + "/buyer");
 });
 
 app.post('/bids', function (req, res) {
-    const server = Router.routeRandomly(servers);
-    res.redirect(307, servers[0].address + "/bids");
+    const server = Router.routeRandomly(registry.getServers());
+    res.redirect(307, server.address + "/bids");
 });
 
 app.post('/bids/:bidId/offer', function (req, res) {
-    const server = Router.routeViaOngoingBid(req.params.bidId, servers);
-    res.redirect(307, servers[0].address + "/bids/" + req.params.bidId + "/offer");
+    const server = Router.routeViaOngoingBid(req.params.bidId, registry.getServers());
+    res.redirect(307, server.address + "/bids/" + req.params.bidId + "/offer");
 });
 
 app.post('/bids/:bidId/cancel', function (req, res) {
-    const server = Router.routeViaOngoingBid(req.params.bidId, servers);
-    res.redirect(307, servers[0].address + "/bids/" + req.params.bidId + "/cancel");
+    const server = Router.routeViaOngoingBid(req.params.bidId, registry.getServers());
+    res.redirect(307, server.address + "/bids/" + req.params.bidId + "/cancel");
 });
 
 app.get('/healthcheck', function (req, res) {

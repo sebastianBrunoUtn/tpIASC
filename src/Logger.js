@@ -9,7 +9,7 @@ class Logger {
     }
 
     log(log, tag) {
-        fs.appendFile(this.path, `[${tag}] ${log}\n`, err => {if(err) throw err});
+        fs.appendFile(this.path,(tag? `[${tag}] ` : '') + `${log}\n`, err => {if(err) throw err});
     }
 }
 
