@@ -12,9 +12,19 @@ class Notifier {
         request.post(this.supervisorAddress + "/new-buyer", {form: {buyer: JSON.stringify(buyer), serverId: this.serverId}},
             (err, res, body) => {
                 if(err) {
-                    console.log(err);
+                    this.logger.log(`Error notifying supervisor: ${err}`);
                 }
         });
+    }
+
+    notifyNewBid(bid)  {
+        this.logger.log(`Notifying Supervisor about new bid ${bid.id}: ${this.supervisorAddress + "/new-bid"}`);
+        request.post(this.supervisorAddress + "/new-bid", {form: {bidId: bid.id, serverId: this.serverId}},
+            (err, res, body) => {
+                if(err) {
+                    this.logger.log(`Error notifying supervisor: ${err}`);
+                }
+            });
     }
 }
 

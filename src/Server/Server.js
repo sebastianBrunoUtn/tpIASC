@@ -22,7 +22,7 @@ const noOpNotifierMock = {
     notifyFinishedBid: () => false,
     notifyCancelledBid: () => false
 };
-const bidManager = new BidManager(noOpNotifierMock, logger);
+const bidManager = new BidManager(notifier, logger);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

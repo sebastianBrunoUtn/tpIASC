@@ -22,13 +22,17 @@ loadBalancerCommunicator.sendServers(servers);
 
 app.post('/new-bid', function (req, res) {
     const server = servers.find((server) => server.id === parseInt(req.body.serverId));
-    const bidId = parseInt(req.body.bidId);
+    if(server) {
+        const bidId = parseInt(req.body.bidId);
 
-    server.addBid(bidId);
-    loadBalancerCommunicator.sendServers(servers);
+        server.addBid(bidId);
+        loadBalancerCommunicator.sendServers(servers);
 
-    logger.log(`Added bid #${bidId} to Server #${parseInt(req.body.serverId)}`, "Supervisor");
-    res.send(true);
+        logger.log(`Added bid #${bidId} to Server #${parseInt(req.body.serverId)}`, "Supervisor");
+        res.send(true);
+    } else{
+        res.send(false);
+    }
 });
 
 app.post('/new-buyer', function (req, res) {

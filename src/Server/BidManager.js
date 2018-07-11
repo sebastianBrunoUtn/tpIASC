@@ -16,8 +16,8 @@ class BidManager {
             .catch(() => this.logger.log(`Bid #${bidId} ended but it was cancelled`));
 
         this.bids.set(bidId, bid);
-        this.notifier.notifyNewBid(bid);
         this.logger.log(`New bid #${bidId}: ${JSON.stringify(bid)}`);
+        this.notifier.notifyNewBid(bid);
 
         return bidId;
     }

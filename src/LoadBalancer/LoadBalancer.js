@@ -31,9 +31,9 @@ app.post('/bids', function (req, res) {
 });
 
 app.post('/bids/:bidId/offer', function (req, res) {
-    const server = Router.routeViaOngoingBid(req.params.bidId, registry.getServers());
-    console.log(server.address + "/bids/" + req.params.bidId + "/offer");
-    res.redirect(307, server.address + "/bids/" + req.params.bidId + "/offer");
+    const bidId = parseInt(req.params.bidId);
+    const server = Router.routeViaOngoingBid(bidId, registry.getServers());
+    res.redirect(307, server.address + "/bids/" + bidId + "/offer");
 });
 
 app.post('/bids/:bidId/cancel', function (req, res) {
