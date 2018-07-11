@@ -30,6 +30,13 @@ app.post('/bids', function (req, res) {
     res.redirect(307, server.address + "/bids");
 });
 
+app.get('/bids/:bidId', function (req, res) {
+    const bidId = parseInt(req.params.bidId);
+    const server = Router.routeViaOngoingBid(bidId, registry.getServers());
+    res.redirect(307, server.address + "/bids/" + bidId);
+});
+
+
 app.post('/bids/:bidId/offer', function (req, res) {
     const bidId = parseInt(req.params.bidId);
     const server = Router.routeViaOngoingBid(bidId, registry.getServers());

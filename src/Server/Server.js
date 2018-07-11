@@ -8,7 +8,6 @@ const Bid = require("./Bid");
 const BidManager = require("./BidManager");
 
 const app = express();
-console.log(process.argv);
 const serverId = process.argv[2]? process.argv[2] : 666;
 const supervisorAddress = process.argv[3]? process.argv[3] : "http://localhost:8009";
 const port = process.argv[4]? process.argv[4] : 8080;
@@ -52,6 +51,15 @@ app.post('/bids', function (req, res) {
     const bid = new Bid(JSON.parse(req.body.tags), parseFloat(req.body.price), parseInt(req.body.duration), JSON.parse(req.body.article));
     bidManager.newBid(bid);
     res.send(bid.id.toString());
+});
+
+app.get('/bids/:bidId', function (req, res) {
+    const bid = bidManager.getBid(parseInt(req.params.bidId));
+    if(bid) {
+        res.send(bid);
+    } else {
+        res.status(404);
+    }
 });
 
 // Próxima versión: Asegurarse de que sea el que la creó el que puede cancelarla.

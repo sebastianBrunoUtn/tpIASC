@@ -57,5 +57,5 @@ app.post('/new-buyer', function (req, res) {
 });
 
 app.listen(port, function () {
-    console.log('Server listening on port ' + port);
+    console.log('Supervisor listening on port ' + port);
 });
