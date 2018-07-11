@@ -1,7 +1,7 @@
 const {assert} = require('chai');
 const Registry = require("../Registry");
 
-const Server = (id, address = null, ongoingBids = null) => ({id, address, ongoingBids});
+const Server = (id, address = null, bids = null) => ({id, address, bids});
 
 describe('Registry', function() {
     it('should start with no servers', function() {

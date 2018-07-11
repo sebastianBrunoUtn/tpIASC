@@ -1,16 +1,20 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const Logger = require("../Logger");
+const Notifier = require("./Notifier");
 const Buyer = require("./Buyer");
 const BuyersRegistry = require("./BuyersRegistry");
 const Bid = require("./Bid");
 const BidManager = require("./BidManager");
 
 const app = express();
+console.log(process.argv);
 const serverId = process.argv[2]? process.argv[2] : 666;
-const port = process.argv[3]? process.argv[3] : 8080;
+const supervisorAddress = process.argv[3]? process.argv[3] : "http://localhost:8009";
+const port = process.argv[4]? process.argv[4] : 8080;
 
 const logger = new Logger(`./logs/server-${serverId}.txt`);
+const notifier = new Notifier(serverId, supervisorAddress, logger);
 const buyersRegistry = new BuyersRegistry(logger);
 const noOpNotifierMock = {
     notifyNewBid: () => false,
@@ -24,7 +28,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/buyer', function (req, res) {
-    buyersRegistry.addBuyer(new Buyer(req.body.name, req.body.address, JSON.parse(req.body.tags)));
+    const buyer = new Buyer(req.body.name, req.body.address, JSON.parse(req.body.tags));
+    buyersRegistry.addBuyer(buyer);
+    notifier.notifyNewBuyer(buyer);
+    res.send(true);
+});
+
+app.post('/add-buyer', function (req, res) {
+    logger.log(`Received new buyer from Supervisor: ${req.body.buyer}`, "Server");
+    const receivedBuyer = JSON.parse(req.body.buyer);
+    const buyer = new Buyer(receivedBuyer.name, receivedBuyer.address, receivedBuyer.tagsOfInterest);
+    buyersRegistry.addBuyer(buyer);
     res.send(true);
 });
 

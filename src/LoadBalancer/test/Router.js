@@ -1,7 +1,7 @@
 const {assert} = require('chai');
 const Router = require("../Router");
 
-const Server = (id, address = null, ongoingBids = null) => ({id, address, ongoingBids});
+const Server = (id, address = null, bids = null) => ({id, address, bids});
 const servers = [Server(1, null, [1, 3]), Server(2, null, [4, 5]), Server(3, null, [2])];
 
 describe('Router', function() {

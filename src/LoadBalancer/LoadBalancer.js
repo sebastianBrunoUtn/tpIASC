@@ -9,14 +9,14 @@ const port = process.argv[2]? process.argv[2] : 8080;
 
 const logger = new Logger('./logs/loadBalancer.txt');
 const registry = new Registry();
-const Server = (id, address = null, ongoingBids = null) => ({id, address, ongoingBids});
+const Server = (id, address = null, bids = null) => ({id, address, bids});
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/api/set-servers', function (req, res) {
     logger.log(`Received request to set/update servers: ${req.body.servers}`);
-    registry.setServers(JSON.parse(req.body.servers).map(server => Server(server.id, server.address, server.ongoingBids)));
+    registry.setServers(JSON.parse(req.body.servers).map(server => Server(server.id, server.address, server.bids)));
     res.send(true);
 });
 
@@ -32,6 +32,7 @@ app.post('/bids', function (req, res) {
 
 app.post('/bids/:bidId/offer', function (req, res) {
     const server = Router.routeViaOngoingBid(req.params.bidId, registry.getServers());
+    console.log(server.address + "/bids/" + req.params.bidId + "/offer");
     res.redirect(307, server.address + "/bids/" + req.params.bidId + "/offer");
 });
 

@@ -9,7 +9,7 @@ class LoadBalancerCommunicator {
         const serversJSON = servers.map(server => ({
             id: server.id,
             address: server.address,
-            ongoingBids: server.ongoingBids.map(bid => bid.id)
+            bids: server.bids.map(bid => bid.id)
         }));
 
         request.post(this.address + "/api/set-servers", {form: {servers: JSON.stringify(serversJSON)}}, (err, res, body) => {
