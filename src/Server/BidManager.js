@@ -1,6 +1,7 @@
 class BidManager {
-    constructor(notifier, logger = null) {
+    constructor(notifier, slaveCommunicator = null, logger = null) {
         this.notifier = notifier;
+        this.slaveCommunicator = slaveCommunicator;
         this.logger = logger? {log: (msg) => logger.log(msg, "BidManager")} : {log: () => false};
         this.bids = new Map();
     }
@@ -11,6 +12,7 @@ class BidManager {
         bid.run(bidId)
             .then(() => {
                 //this.notifier.notifyFinishedBid(bid);
+                this.slaveCommunicator.updateBids(this.getBids());
                 this.logger.log(`Bid #${bidId} finished: ${JSON.stringify(bid)}`);
             })
             .catch(() => this.logger.log(`Bid #${bidId} ended but it was cancelled`));
@@ -28,8 +30,9 @@ class BidManager {
             this.logger.log(`Resuming pending bid #${bid.id}: ${JSON.stringify(bid)}`);
             bid.run(bid.id)
                 .then(() => {
+                    //this.notifier.notifyFinishedBid(bid);
                     this.logger.log(`Bid #${bid.id} finished: ${JSON.stringify(bid)}`);
-                    this.notifier.notifyFinishedBid(bid);
+                    this.slaveCommunicator.updateBids(this.getBids());
                 })
                 .catch(() => this.logger.log(`Bid #${bid.id} ended but it was cancelled`));
         }

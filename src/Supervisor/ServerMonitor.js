@@ -23,6 +23,7 @@ class ServerMonitor {
 
     startMonitoring() {
         setInterval(this.checkServersStatus.bind(this), 1000);
+        setInterval(this.checkSlavesStatus.bind(this), 2000);
     }
 
     checkServersStatus() {
@@ -31,8 +32,19 @@ class ServerMonitor {
                 if(err) {
                     console.log(err);
                     this.logger.log(`Server ${server.id} (${server.address}) is down, resurrecting it...`);
-                    //Check for ongoing bids
                     this.instantiator.instantiateServer(server);
+                }
+            });
+        });
+    }
+
+    checkSlavesStatus() {
+        this.slaves.forEach(slave => {
+            request(slave.address + "/healthcheck", (err, res, body) => {
+                if(err) {
+                    console.log(err);
+                    this.logger.log(`Server ${slave.id} (${slave.address}) is down, resurrecting it...`);
+                    this.instantiator.instantiateSlave(slave);
                 }
             });
         });

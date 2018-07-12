@@ -40,6 +40,10 @@ app.get('/healthcheck', function (req, res) {
     res.send(true);
 });
 
+app.post('/kill', function (req, res) {
+    process.exit();
+});
+
 app.listen(port, function () {
     console.log('Slave listening on port ' + port);
 });
