@@ -29,8 +29,8 @@ describe('BidManager', function() {
         const bidRunner = new BidManager(noOpNotifierMock, logger);
         const bidId = bidRunner.newBid(new Bid([], 0.0, 200, {}));
 
-        assert.isTrue(bidRunner.isRunningBid(bidId));
-        assert.isFalse(bidRunner.isRunningBid(666));
+        assert.isTrue(bidRunner.getBid(bidId).running);
+        assert.isFalse(bidRunner.getBid(666));
     });
 
     it('should accept an offer if it is higher than the price', function() {
@@ -114,26 +114,13 @@ describe('BidManager', function() {
         bidRunner.offer(bidId, buyerName, 20);
     });
 
-    it('should correctly return false to isRunningBid if it has ended', function(done) {
-        const notifierMock = {
-            notifyNewBid: () => false,
-            notifyNewOffer: () => false,
-            notifyFinishedBid: () => {
-                assert.isFalse(bidRunner.isRunningBid(bidId));
-                done();
-            }
-        };
-        const bidRunner = new BidManager(notifierMock, logger);
-        const bidId = bidRunner.newBid(new Bid([], 0.0, 200, {}));
-    });
-
     it('should correctly cancel a bid', function() {
         const bidRunner = new BidManager(noOpNotifierMock, logger);
         const bidId = bidRunner.newBid(new Bid([], 0.0, 200, {}));
 
         bidRunner.cancelBid(bidId);
 
-        assert.isFalse(bidRunner.isRunningBid(bidId));
+        assert.isTrue(bidRunner.getBid(bidId).cancelled);
     });
 
     it('should notify of a cancelled bid', function(done) {

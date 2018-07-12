@@ -1,7 +1,8 @@
 class Server {
-    constructor(id, address) {
+    constructor(id, address, slave) {
         this.id = id;
         this.address = address;
+        this.slave = slave;
         this.bids = [];
     }
 

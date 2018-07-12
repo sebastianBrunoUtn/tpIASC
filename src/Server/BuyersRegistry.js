@@ -17,6 +17,10 @@ class BuyersRegistry {
         return Array.from(this.buyers).some((buyer) => buyer.name === name);
     }
 
+    getBuyers() {
+        return Array.from(this.buyers);
+    }
+
     getBuyersWithTags(tags) {
         return Array.from(this.buyers).filter((buyer) => buyer.hasAnyTag(tags));
     }

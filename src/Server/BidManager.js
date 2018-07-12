@@ -10,7 +10,7 @@ class BidManager {
 
         bid.run(bidId)
             .then(() => {
-                this.notifier.notifyFinishedBid(bid);
+                //this.notifier.notifyFinishedBid(bid);
                 this.logger.log(`Bid #${bidId} finished: ${JSON.stringify(bid)}`);
             })
             .catch(() => this.logger.log(`Bid #${bidId} ended but it was cancelled`));
@@ -22,9 +22,20 @@ class BidManager {
         return bidId;
     }
 
-    isRunningBid(bidId) {
-        const bid = this.getBid(bidId);
-        return bid && bid.isRunning();
+    newBidFromSlave(bid) {
+        console.log(bid);
+        if(!bid.cancelled && !bid.finished) {
+            this.logger.log(`Resuming pending bid #${bid.id}: ${JSON.stringify(bid)}`);
+            bid.run(bid.id)
+                .then(() => {
+                    this.logger.log(`Bid #${bid.id} finished: ${JSON.stringify(bid)}`);
+                    this.notifier.notifyFinishedBid(bid);
+                })
+                .catch(() => this.logger.log(`Bid #${bid.id} ended but it was cancelled`));
+        }
+
+        this.bids.set(bid.id, bid);
+        this.logger.log(`Loaded bid from slave #${bid.id}: ${JSON.stringify(bid)}`);
     }
 
     offer(bidId, bidder, price) {
@@ -49,6 +60,10 @@ class BidManager {
             this.notifier.notifyCancelledBid(bid);
             this.logger.log(`Bid #${bidId} cancelled`);
         }
+    }
+
+    getBids() {
+        return Array.from(this.bids.values());
     }
 
     getBid(bidId) {

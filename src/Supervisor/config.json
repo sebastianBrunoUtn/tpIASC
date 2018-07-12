@@ -3,11 +3,13 @@
   "servers": [
     {
       "id": 1,
-      "address": "http://localhost:8020"
+      "address": "http://localhost:8030",
+      "slave": "http://localhost:8024"
     },
     {
       "id": 2,
-      "address": "http://localhost:8021"
+      "address": "http://localhost:8031",
+      "slave": "http://localhost:8025"
     }
   ]
 }

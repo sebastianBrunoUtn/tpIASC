@@ -12,8 +12,9 @@ const port = process.argv[2]? process.argv[2] : 8080;
 
 const config = require('./config.json');
 const logger = new Logger('./logs/supervisor.txt');
-const servers = config.servers.map(server => new Server(server.id, server.address));
-const serverMonitor = new ServerMonitor(servers, new LocalInstantiator(port), logger);
+const servers = config.servers.map(server => new Server(server.id, server.address, server.slave));
+const slaves = config.servers.map(server => ({id: server.id, address: server.slave}));
+const serverMonitor = new ServerMonitor(servers, slaves, new LocalInstantiator(port), logger);
 const loadBalancerCommunicator = new LoadBalancerCommunicator(config.loadBalancer);
 
 app.use(bodyParser.json());

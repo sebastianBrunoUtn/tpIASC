@@ -6,21 +6,36 @@ class Bid {
         this.startTime = null;
         this.duration = duration;
         this.article = article;
-        this.running = true;
+        this.running = false;
+        this.finished = false;
         this.cancelled = false;
         this.highestBidder = null;
     }
 
-    run(id) {
-        this.id = id;
-        this.startTime = new Date().getTime();
+    static fromJSON(json) {
+        const bid = new Bid(json.tags, json.basePrice, json.duration, json.article, json.id);
+        bid.startTime = json.startTime;
+        bid.running = json.running;
+        bid.finished = json.finished;
+        bid.cancelled = json.cancelled;
+        bid.highestBidder = json.highestBidder;
+        return bid;
+    }
 
-        return new Promise((resolve, _) => setTimeout(resolve, this.duration))
+    run(id) {
+        const now = new Date().getTime();
+        this.id = id;
+        this.running = true;
+        this.startTime = this.startTime? this.startTime : now;
+        const timeLeft = (this.startTime + this.duration) - now;
+
+        return new Promise((resolve, _) => setTimeout(resolve, timeLeft))
             .then(() => {
                 if (this.cancelled) {
                     return Promise.reject("Cancelled bid");
                 } else {
                     this.running = false;
+                    this.finished = true;
                     return this;
                 }
             });
@@ -43,12 +58,6 @@ class Bid {
     isRunning () {
         return this.running && !this.cancelled;
     }
-
-    /*
-
-    isFinished = () => !this.running && !this.cancelled && this.id;
-
-    isCancelled = () => this.cancelled;*/
 }
 
 module.exports = Bid;
