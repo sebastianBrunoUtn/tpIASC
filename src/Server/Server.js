@@ -15,22 +15,18 @@ const slaveAddress = process.argv[4]? process.argv[4] : false;
 const port = process.argv[5]? process.argv[5] : 8080;
 
 const logger = new Logger(`./logs/server-${serverId}.txt`);
-const notifier = new Notifier(serverId, supervisorAddress, logger);
-const slaveCommunicator = new SlaveCommunicator([slaveAddress], logger);
 const buyersRegistry = new BuyersRegistry(logger);
-const noOpNotifierMock = {
-    notifyNewBid: () => false,
-    notifyNewOffer: () => false,
-    notifyFinishedBid: (bid) => {return false;},
-    notifyCancelledBid: () => false
-};
+const slaveCommunicator = new SlaveCommunicator(slaveAddress, logger);
+
+slaveCommunicator.getBuyers(buyers =>
+    buyersRegistry.addBuyers(buyers.map(buyer => new Buyer(buyer.name, buyer.address, buyer.tagsOfInterest))));
+const notifier = new Notifier(serverId, supervisorAddress, buyersRegistry, logger);
 const bidManager = new BidManager(notifier, slaveCommunicator, logger);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-slaveCommunicator.getBuyers(buyers => buyersRegistry.addBuyers(buyers));
-slaveCommunicator.getBids(bids => bids.forEach(bid => bidManager.newBidFromSlave(Bid.fromJSON(bid))));
+slaveCommunicator.getBids(bids => bids.forEach(bid => bidManager.loadBidFromSlave(Bid.fromJSON(bid))));
 
 app.post('/buyer', function (req, res) {
     const buyer = new Buyer(req.body.name, req.body.address, JSON.parse(req.body.tags));
@@ -90,7 +86,11 @@ app.get('/healthcheck', function (req, res) {
 });
 
 app.post('/kill', function (req, res) {
-    process.exit();
+    try {
+        process.exit();
+    } catch(err) {
+        logger.log("Trying to kill but couldnt beacuse " + err);
+    }
 });
 
 app.listen(port, function () {

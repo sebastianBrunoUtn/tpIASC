@@ -4,7 +4,10 @@ class Router {
     }
 
     static routeViaOngoingBid(bidId, servers) {
+        console.log(bidId);
+        console.log(servers);
         const bidServer = servers.find((server) => server.bids.includes(bidId));
+        console.log(bidServer);
         return bidServer? bidServer : false;
     }
 }

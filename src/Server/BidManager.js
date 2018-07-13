@@ -9,9 +9,9 @@ class BidManager {
     newBid(bid) {
         const bidId = Math.floor(Math.random() * 100000);   //Próxima versión: Se puede llevar un registro global de IDs.
 
-        bid.run(bidId)
+        bid.run(bidId, this.logger)
             .then(() => {
-                //this.notifier.notifyFinishedBid(bid);
+                this.notifier.notifyFinishedBid(bid);
                 this.slaveCommunicator.updateBids(this.getBids());
                 this.logger.log(`Bid #${bidId} finished: ${JSON.stringify(bid)}`);
             })
@@ -24,20 +24,23 @@ class BidManager {
         return bidId;
     }
 
-    newBidFromSlave(bid) {
-        console.log(bid);
+    loadBidFromSlave(bid) {
         if(!bid.cancelled && !bid.finished) {
+            this.logger.log(`Adding 5 seconds to #${bid.id}: ${bid.startTime} -> ${bid.startTime + 5000}`);
+            bid.startTime += 5000;
+
             this.logger.log(`Resuming pending bid #${bid.id}: ${JSON.stringify(bid)}`);
-            bid.run(bid.id)
+            bid.run(bid.id, this.logger)
                 .then(() => {
-                    //this.notifier.notifyFinishedBid(bid);
+                    this.notifier.notifyFinishedBid(bid);
                     this.logger.log(`Bid #${bid.id} finished: ${JSON.stringify(bid)}`);
                     this.slaveCommunicator.updateBids(this.getBids());
                 })
-                .catch(() => this.logger.log(`Bid #${bid.id} ended but it was cancelled`));
+                .catch();
         }
 
         this.bids.set(bid.id, bid);
+        this.slaveCommunicator.updateBids(this.getBids());
         this.logger.log(`Loaded bid from slave #${bid.id}: ${JSON.stringify(bid)}`);
     }
 

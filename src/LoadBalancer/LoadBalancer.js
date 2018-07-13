@@ -9,7 +9,7 @@ const port = process.argv[2]? process.argv[2] : 8080;
 
 const logger = new Logger('./logs/loadBalancer.txt');
 const registry = new Registry();
-const Server = (id, address = null, bids = null) => ({id, address, bids});
+const Server = (id, address = null, bids = null) => ({id, address, bids: bids.map(bid => parseInt(bid))});
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -36,7 +36,6 @@ app.get('/bids/:bidId', function (req, res) {
     res.redirect(307, server.address + "/bids/" + bidId);
 });
 
-
 app.post('/bids/:bidId/offer', function (req, res) {
     const bidId = parseInt(req.params.bidId);
     const server = Router.routeViaOngoingBid(bidId, registry.getServers());
@@ -44,7 +43,7 @@ app.post('/bids/:bidId/offer', function (req, res) {
 });
 
 app.post('/bids/:bidId/cancel', function (req, res) {
-    const server = Router.routeViaOngoingBid(req.params.bidId, registry.getServers());
+    const server = Router.routeViaOngoingBid(parseInt(req.params.bidId), registry.getServers());
     res.redirect(307, server.address + "/bids/" + req.params.bidId + "/cancel");
 });
 
