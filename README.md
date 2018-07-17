@@ -23,7 +23,7 @@ Subcomponentes lógicos:
 Estos van a ser los componentes encargados de correr las subastas y de registrar los nuevos compradores.<br>
 Está en constante comunicación (no bloqueante) con el <b>Supervisor</b> a fin de sincronizar la información con el resto del sistema.<br>
 Se comunica también con los clientes a fin de notificarles sobre las subastas que corre, finalización y cancelación de las mismas y las nuevas ofertas.<br>
-Cada Server cuenta con su Slave, al cual le replica toda su información (Buyers y Bids) y al cual consulta siempre en su arranque. <br>
+Cada <b>Server</b> cuenta con su <b>Slave</b>, al cual le replica toda su información (Buyers y Bids) y al cual consulta siempre en su arranque. <br>
 Subcomponentes lógicos:
 <ol>
 <li>Buyers Registry: Lleva un registro de los compradores y sus tags de interés. Ante un request de nuevo comprador, se agrega a este y se notifica al <b>Supervisor</b>, para que lo sincronice con el resto de los servers.</li>
