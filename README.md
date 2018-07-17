@@ -23,6 +23,7 @@ Subcomponentes lógicos:
 Estos van a ser los componentes encargados de correr las subastas y de registrar los nuevos compradores.<br>
 Está en constante comunicación (no bloqueante) con el <b>Supervisor</b> a fin de sincronizar la información con el resto del sistema.<br>
 Se comunica también con los clientes a fin de notificarles sobre las subastas que corre, finalización y cancelación de las mismas y las nuevas ofertas.<br>
+Cada Server cuenta con su Slave, al cual le replica toda su información (Buyers y Bids) y al cual consulta siempre en su arranque. <br>
 Subcomponentes lógicos:
 <ol>
 <li>Buyers Registry: Lleva un registro de los compradores y sus tags de interés. Ante un request de nuevo comprador, se agrega a este y se notifica al <b>Supervisor</b>, para que lo sincronice con el resto de los servers.</li>
@@ -30,14 +31,14 @@ Subcomponentes lógicos:
 <li>Notifier: Componente dedicado a la comunicación con el <b>Supervisor</b> y los clientes.</li>
 </ol>
 
+
 <h4>Supervisor</h4>
 El Supervisor es el encargado de:
 <ul>
 <li>Instanciar los <b>Servers</b> en el arranque del sistema. La información sobre estos (ids, direcciones) se le suministra vía archivo de configuración.</li>
 <li>Enviar las direcciones de los distintos servers al <b>Load Balancer</b> en el arranque del sistema. La dirección de este se le suministra vía archivo de configuración.</li>
-<li>Monitorear continuamente los Servers y levantarlos en caso de caída, enviándoles la información necesaria para que reanuden las subastas que estaban corriendo.</li>
+<li>Monitorear continuamente los Servers y Slaves y levantarlos en caso de caída.</li>
 <li>Recibir updates de nuevos compradores por parte del <b>Server</b> que haya tomado el request y sincronizarlo con el resto.</li>
-    <li>Recibir updates de las subastas por parte del <b>Server</b> que esté corriendo cada una, a fin de resguardar la información en caso de caída de dicho <b>Server</b>.</li>
 <li>Ante la creación de una nueva subasta, notificar al <b>Load Balancer</b> sobre que <b>Server</b> la está corriendo, a fin de que todos los requests de esta sean redirigidos a él.</li>
 </ul>
 Subcomponentes lógicos:
