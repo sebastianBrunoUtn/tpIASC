@@ -61,15 +61,15 @@ Subcomponentes lógicos:
         <li>Está decisión fue tomada para maximizar la disponibilidad de estos datos. También, una vez iniciada la subasta, los <b>Servers</b>  pueden ser totalmente autónomos en cuanto a la comunicación con los compradores, no los afectaría una partición de red con el <b>Supervisor</b>.</li>
     </ul>
 </li>
-<li>Almacenar la información de todas las subastas en el <b>Supervisor</b>.
+<li>Almacenar la información de todas las subastas en su <b>Server</b>, replicada en su <b>Slave</b>.
     <ul>
         <li>Necesitamos almacenar la información crítica de las subastas en algún lugar. Si no lo hiciéramos, al caerse un <b>Server</b> se perdería esta información y no se podría reanudar la subasta.</li>
-        <li>Decidimos no almacenar toda esta información en todos los <b>Servers</b>, como en el caso de los compradores, ya que por un lado a cada <b>Server</b> sólo le interesa las subastas que está corriendo. Y, por otro lado, necesitaríamos diseñar un algoritmo de sincronización por consenso, el cual está por fuera de nuestra expertise.</li>
+        <li>Decidimos que el almacenamiento de la misma para cada subasta se realice en los <b>Servers</b>, ya que allí es donde "viven". Y, ademas, replicar dicha información en un <b>Slave</b> para que ante la caida del Server, la información pueda ser recuperada.</li>
     </ul>
 </li>
 <li>Utilizar al <b>Supervisor</b> para sincronizar la información de compradores.
     <ul>
-        <li>Como en la decisión anterior, no hacer esto implicaría un complejo algoritmo de sincronización peer to peer.</li>
+        <li>Como en la decisión anterior, no hacer esto implicaría un complejo algoritmo de sincronización peer to peer, por encima de nuestra expertise.</li>
     </ul>
 </li>
 </ol>
@@ -79,3 +79,6 @@ Subcomponentes lógicos:
 (en tpIASC) <b>node src/LoadBalancer/LoadBalancer.js [puerto]</b>
 <h4>Supervisor</h4>
 (en tpIASC) <b>node src/Supervisor/Supervisor.js [puerto]</b>
+<h4>Clientes</h4>
+(en tpIASC) <b>node src/Client.js [direccion del Load Balancer] [NombreDelCliente] [puerto]</b>
+
