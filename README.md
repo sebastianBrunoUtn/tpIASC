@@ -13,7 +13,7 @@ Subcomponentes lógicos:
 <li>Router: Selecciona el <b>Server</b> hacia el cual se va a redirigir el request. Según el request:
     <ol>
         <li>Registro de nuevo comprador: Selecciona un server al azar</li>
-        <li>Creación de nueva subasta: Selecciona un servidor al azar (en futuras iteraciones estaría bueno que se seleccione en base a la cantidad de subastas que está corriendo cada uno)</li>
+        <li>Creación de nueva subasta: Selecciona un servidor via Round Robin (en futuras iteraciones estaría bueno que se seleccione en base a la cantidad de subastas que está corriendo cada uno)</li>
         <li>Requests referidos a una subasta en curso: Selecciona al <b>Server</b> que esté corriendo dicha subasta</li>
     </ol>
 </li>
